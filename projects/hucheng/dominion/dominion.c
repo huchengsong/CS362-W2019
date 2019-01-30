@@ -648,16 +648,18 @@ int adventureCardEffect(struct gameState *state, int currentPlayer){
     int drawntreasure = 0;
     int temphand[MAX_HAND];// moved above the if statement
     int z = 0; // this is the counter for the temp hand
-    while(drawntreasure<2){
-        if (state->deckCount[currentPlayer] <1){//if the deck is empty we need to shuffle discard and add to deck
+    while(drawntreasure<2) {
+        if (state->deckCount[currentPlayer] < 1) {//if the deck is empty we need to shuffle discard and add to deck
             shuffle(currentPlayer, state);
         }
         drawCard(currentPlayer, state);
-        int cardDrawn = state->hand[currentPlayer][state->handCount[currentPlayer]-1];//top card of hand is most recently drawn card.
-        if (cardDrawn == copper || cardDrawn == silver || cardDrawn == gold)
+        int cardDrawn = state->hand[currentPlayer][state->handCount[currentPlayer] -
+                                                   1];//top card of hand is most recently drawn card.
+        if (cardDrawn == copper || cardDrawn == silver || cardDrawn == gold) {
             // TODO: remove bug
-            // drawntreasure++;
-            ;
+            drawntreasure++;
+            drawntreasure++;
+        }
         else{
             temphand[z]=cardDrawn;
             state->handCount[currentPlayer]--; //this should just remove the top card (the most recently drawn one).
@@ -716,6 +718,7 @@ int councilRoomCardEffect(struct gameState *state, int currentPlayer, int handPo
 
 int feastCardEffect(struct gameState *state, int currentPlayer, int choice) {
 
+    // TODO: remove this bug
     char * bug = "\0";
     bug[2] = 'a';
 
