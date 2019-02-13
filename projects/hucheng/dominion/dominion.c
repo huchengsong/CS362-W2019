@@ -4,6 +4,9 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
+#include "adventureCardEffect.h"
+#include "smithyCardEffect.h"
+#include "councilRoomCardEffect.h"
 
 int compare(const void* a, const void* b) {
     if (*(int*)a > *(int*)b)
@@ -641,77 +644,6 @@ int getCost(int cardNumber)
     }
 
     return -1;
-}
-
-// refactored function for card effect
-int adventureCardEffect(struct gameState *state, int currentPlayer){
-    int drawntreasure = 0;
-    int temphand[MAX_HAND];// moved above the if statement
-    int z = 0; // this is the counter for the temp hand
-    while(drawntreasure<2){
-        if (state->deckCount[currentPlayer] <1){//if the deck is empty we need to shuffle discard and add to deck
-            shuffle(currentPlayer, state);
-        }
-        drawCard(currentPlayer, state);
-        int cardDrawn = state->hand[currentPlayer][state->handCount[currentPlayer]-1];//top card of hand is most recently drawn card.
-        if (cardDrawn == copper || cardDrawn == silver || cardDrawn == gold)
-            // TODO: remove bug
-            // drawntreasure++;
-            ;
-        else{
-            temphand[z]=cardDrawn;
-            state->handCount[currentPlayer]--; //this should just remove the top card (the most recently drawn one).
-            z++;
-        }
-    }
-
-    while(z-1>=0){
-        state->discard[currentPlayer][state->discardCount[currentPlayer]++]=temphand[z-1]; // discard all cards in play that have been drawn
-        z=z-1;
-    }
-    return 0;
-}
-
-
-int smithyCardEffect(struct gameState *state, int currentPlayer, int handPos) {
-    //+3 Cards
-    for (int i = 0; i < 3; i++)
-    {
-        // TODO: remove bug
-        //drawCard(currentPlayer, state);
-        drawCard(i, state);
-    }
-
-    //discard card from hand
-    discardCard(handPos, currentPlayer, state, 0);
-    return 0;
-}
-
-int councilRoomCardEffect(struct gameState *state, int currentPlayer, int handPos) {
-
-    //+4 Cards
-    for (int i = 0; i < 4; i++)
-    {
-        drawCard(currentPlayer, state);
-    }
-
-    // TODO: remove bug
-    //+1 Buy
-    //state->numBuys++;
-
-    //Each other player draws a card
-    for (int i = 0; i < state->numPlayers; i++)
-    {
-        if ( i != currentPlayer )
-        {
-            drawCard(i, state);
-        }
-    }
-
-    //put played card in played card pile
-    discardCard(handPos, currentPlayer, state, 0);
-
-    return 0;
 }
 
 int feastCardEffect(struct gameState *state, int currentPlayer, int choice) {
